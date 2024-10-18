@@ -51,7 +51,6 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
      * scrape timestamp is usually set by the Prometheus server during scraping. Exceptions include
      * mirroring metrics with given timestamps from other metric sources.
      */
-    @SuppressWarnings("this-escape")
     public CounterDataPointSnapshot(
         double value,
         Labels labels,
@@ -61,6 +60,7 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
       this(value, labels, exemplar, createdTimestampMillis, scrapeTimestampMillis, null);
     }
 
+    @SuppressWarnings("this-escape")
     private CounterDataPointSnapshot(
         double value,
         Labels labels,

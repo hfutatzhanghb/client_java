@@ -77,7 +77,8 @@ public abstract class DataPointSnapshot {
     return createdTimestampMillis;
   }
 
-  public String getMetricName() {
+  @Nullable
+  String getMetricName() {
     return metricName;
   }
 
@@ -93,7 +94,7 @@ public abstract class DataPointSnapshot {
     }
 
     /** Metric name for error messages */
-    public Builder metricName(@Nullable String metricName) {
+    public T metricName(@Nullable String metricName) {
       this.metricName = metricName;
       return self();
     }
