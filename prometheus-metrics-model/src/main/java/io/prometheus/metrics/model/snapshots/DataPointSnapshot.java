@@ -1,19 +1,24 @@
 package io.prometheus.metrics.model.snapshots;
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings("this-escape")
 public abstract class DataPointSnapshot {
-  private final String metricName;
+  @Nullable private final String metricName;
   private final Labels labels;
   private final long createdTimestampMillis;
   private final long scrapeTimestampMillis;
 
   protected DataPointSnapshot(
-          Labels labels, long createdTimestampMillis, long scrapeTimestampMillis) {
-    this(null, labels, createdTimestampMillis, scrapeTimestampMillis);
+      Labels labels, long createdTimestampMillis, long scrapeTimestampMillis) {
+    this(labels, createdTimestampMillis, scrapeTimestampMillis, null);
   }
 
   protected DataPointSnapshot(
-          String metricName, Labels labels, long createdTimestampMillis, long scrapeTimestampMillis) {
+      Labels labels,
+      long createdTimestampMillis,
+      long scrapeTimestampMillis,
+      @Nullable String metricName) {
     this.metricName = metricName;
     this.labels = labels;
     this.createdTimestampMillis = createdTimestampMillis;
@@ -79,10 +84,17 @@ public abstract class DataPointSnapshot {
   public abstract static class Builder<T extends Builder<T>> {
 
     protected Labels labels = Labels.EMPTY;
+    @Nullable protected String metricName = null;
     protected long scrapeTimestampMillis = 0L;
 
     public T labels(Labels labels) {
       this.labels = labels;
+      return self();
+    }
+
+    /** Metric name for error messages */
+    public Builder metricName(@Nullable String metricName) {
+      this.metricName = metricName;
       return self();
     }
 

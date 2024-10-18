@@ -3,6 +3,7 @@ package io.prometheus.metrics.model.snapshots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of an Info metric. */
 public final class InfoSnapshot extends MetricSnapshot<InfoSnapshot.InfoDataPointSnapshot> {
@@ -45,7 +46,12 @@ public final class InfoSnapshot extends MetricSnapshot<InfoSnapshot.InfoDataPoin
      * mirroring metrics with given timestamps from other metric sources.
      */
     public InfoDataPointSnapshot(Labels labels, long scrapeTimestampMillis) {
-      super(labels, 0L, scrapeTimestampMillis);
+      this(labels, scrapeTimestampMillis, null);
+    }
+
+    private InfoDataPointSnapshot(
+        Labels labels, long scrapeTimestampMillis, @Nullable String metricName) {
+      super(labels, 0L, scrapeTimestampMillis, metricName);
     }
 
     public static Builder builder() {
@@ -57,7 +63,7 @@ public final class InfoSnapshot extends MetricSnapshot<InfoSnapshot.InfoDataPoin
       private Builder() {}
 
       public InfoDataPointSnapshot build() {
-        return new InfoDataPointSnapshot(labels, scrapeTimestampMillis);
+        return new InfoDataPointSnapshot(labels, scrapeTimestampMillis, metricName);
       }
 
       @Override

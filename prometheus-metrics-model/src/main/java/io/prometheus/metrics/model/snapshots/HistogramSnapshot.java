@@ -3,6 +3,7 @@ package io.prometheus.metrics.model.snapshots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of a Histogram. */
 public final class HistogramSnapshot
@@ -222,6 +223,34 @@ public final class HistogramSnapshot
         Exemplars exemplars,
         long createdTimestampMillis,
         long scrapeTimestampMillis) {
+      this(
+          classicBuckets,
+          nativeSchema,
+          nativeZeroCount,
+          nativeZeroThreshold,
+          nativeBucketsForPositiveValues,
+          nativeBucketsForNegativeValues,
+          sum,
+          labels,
+          exemplars,
+          createdTimestampMillis,
+          scrapeTimestampMillis,
+          null);
+    }
+
+    private HistogramDataPointSnapshot(
+        ClassicHistogramBuckets classicBuckets,
+        int nativeSchema,
+        long nativeZeroCount,
+        double nativeZeroThreshold,
+        NativeHistogramBuckets nativeBucketsForPositiveValues,
+        NativeHistogramBuckets nativeBucketsForNegativeValues,
+        double sum,
+        Labels labels,
+        Exemplars exemplars,
+        long createdTimestampMillis,
+        long scrapeTimestampMillis,
+        @Nullable String metricName) {
       super(
           calculateCount(
               classicBuckets,
@@ -233,7 +262,8 @@ public final class HistogramSnapshot
           exemplars,
           labels,
           createdTimestampMillis,
-          scrapeTimestampMillis);
+          scrapeTimestampMillis,
+          metricName);
       this.classicBuckets = classicBuckets;
       this.nativeSchema = nativeSchema;
       this.nativeZeroCount = nativeSchema == CLASSIC_HISTOGRAM ? 0 : nativeZeroCount;
@@ -445,7 +475,8 @@ public final class HistogramSnapshot
             labels,
             exemplars,
             createdTimestampMillis,
-            scrapeTimestampMillis);
+            scrapeTimestampMillis,
+            metricName);
       }
     }
   }

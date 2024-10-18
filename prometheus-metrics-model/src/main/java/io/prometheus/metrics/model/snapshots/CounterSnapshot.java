@@ -3,6 +3,7 @@ package io.prometheus.metrics.model.snapshots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of a Counter. */
 public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataPointSnapshot> {
@@ -57,17 +58,17 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
         Exemplar exemplar,
         long createdTimestampMillis,
         long scrapeTimestampMillis) {
-      this(null, value, labels, exemplar, createdTimestampMillis, scrapeTimestampMillis);
+      this(value, labels, exemplar, createdTimestampMillis, scrapeTimestampMillis, null);
     }
 
-    public CounterDataPointSnapshot(
-        String metricName,
+    private CounterDataPointSnapshot(
         double value,
         Labels labels,
         Exemplar exemplar,
         long createdTimestampMillis,
-        long scrapeTimestampMillis) {
-      super(metricName, labels, createdTimestampMillis, scrapeTimestampMillis);
+        long scrapeTimestampMillis,
+        @Nullable String metricName) {
+      super(labels, createdTimestampMillis, scrapeTimestampMillis, metricName);
       this.value = value;
       this.exemplar = exemplar;
       validate();
@@ -84,7 +85,10 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
 
     protected void validate() {
       if (value < 0.0) {
-        throw new IllegalArgumentException((getMetricName() == null ? "" : getMetricName() + "=") + value + ": counters cannot have a negative value");
+        throw new IllegalArgumentException(
+            (getMetricName() == null ? "" : getMetricName() + "=")
+                + value
+                + ": counters cannot have a negative value");
       }
     }
 
@@ -94,7 +98,6 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
 
     public static class Builder extends DataPointSnapshot.Builder<Builder> {
 
-      private String metricName = null;
       private Exemplar exemplar = null;
       private Double value = null;
       private long createdTimestampMillis = 0L;
@@ -117,17 +120,12 @@ public class CounterSnapshot extends MetricSnapshot<CounterSnapshot.CounterDataP
         return this;
       }
 
-      public Builder metricName(String metricName) {
-        this.metricName = metricName;
-        return this;
-      }
-
       public CounterDataPointSnapshot build() {
         if (value == null) {
           throw new IllegalArgumentException("Missing required field: value is null.");
         }
         return new CounterDataPointSnapshot(
-            metricName, value, labels, exemplar, createdTimestampMillis, scrapeTimestampMillis);
+            value, labels, exemplar, createdTimestampMillis, scrapeTimestampMillis, metricName);
       }
 
       @Override

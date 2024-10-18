@@ -3,6 +3,7 @@ package io.prometheus.metrics.model.snapshots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of a Summary metric. */
 public final class SummarySnapshot
@@ -67,7 +68,28 @@ public final class SummarySnapshot
         Exemplars exemplars,
         long createdTimestampMillis,
         long scrapeTimestampMillis) {
-      super(count, sum, exemplars, labels, createdTimestampMillis, scrapeTimestampMillis);
+      this(
+          count,
+          sum,
+          quantiles,
+          labels,
+          exemplars,
+          createdTimestampMillis,
+          scrapeTimestampMillis,
+          null);
+    }
+
+    private SummaryDataPointSnapshot(
+        long count,
+        double sum,
+        Quantiles quantiles,
+        Labels labels,
+        Exemplars exemplars,
+        long createdTimestampMillis,
+        long scrapeTimestampMillis,
+        @Nullable String metricName) {
+      super(
+          count, sum, exemplars, labels, createdTimestampMillis, scrapeTimestampMillis, metricName);
       this.quantiles = quantiles;
       validate();
     }
@@ -121,7 +143,8 @@ public final class SummarySnapshot
             labels,
             exemplars,
             createdTimestampMillis,
-            scrapeTimestampMillis);
+            scrapeTimestampMillis,
+            metricName);
       }
     }
   }

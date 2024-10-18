@@ -3,6 +3,7 @@ package io.prometheus.metrics.model.snapshots;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of an Unknown (Untyped) metric. */
 public final class UnknownSnapshot
@@ -49,7 +50,16 @@ public final class UnknownSnapshot
      */
     public UnknownDataPointSnapshot(
         double value, Labels labels, Exemplar exemplar, long scrapeTimestampMillis) {
-      super(labels, 0L, scrapeTimestampMillis);
+      this(value, labels, exemplar, scrapeTimestampMillis, null);
+    }
+
+    private UnknownDataPointSnapshot(
+        double value,
+        Labels labels,
+        Exemplar exemplar,
+        long scrapeTimestampMillis,
+        @Nullable String metricName) {
+      super(labels, 0L, scrapeTimestampMillis, metricName);
       this.value = value;
       this.exemplar = exemplar;
     }
@@ -90,7 +100,8 @@ public final class UnknownSnapshot
         if (value == null) {
           throw new IllegalArgumentException("Missing required field: value is null.");
         }
-        return new UnknownDataPointSnapshot(value, labels, exemplar, scrapeTimestampMillis);
+        return new UnknownDataPointSnapshot(
+            value, labels, exemplar, scrapeTimestampMillis, metricName);
       }
 
       @Override

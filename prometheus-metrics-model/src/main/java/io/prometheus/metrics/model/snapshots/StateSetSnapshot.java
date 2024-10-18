@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.annotation.Nullable;
 
 /** Immutable snapshot of a StateSet metric. */
 public final class StateSetSnapshot
@@ -67,7 +68,16 @@ public final class StateSetSnapshot
      */
     public StateSetDataPointSnapshot(
         String[] names, boolean[] values, Labels labels, long scrapeTimestampMillis) {
-      super(labels, 0L, scrapeTimestampMillis);
+      this(names, values, labels, scrapeTimestampMillis, null);
+    }
+
+    private StateSetDataPointSnapshot(
+        String[] names,
+        boolean[] values,
+        Labels labels,
+        long scrapeTimestampMillis,
+        @Nullable String metricName) {
+      super(labels, 0L, scrapeTimestampMillis, metricName);
       if (names.length == 0) {
         throw new IllegalArgumentException("StateSet must have at least one state.");
       }
@@ -172,7 +182,7 @@ public final class StateSetSnapshot
           valuesArray[i] = values.get(i);
         }
         return new StateSetDataPointSnapshot(
-            names.toArray(new String[] {}), valuesArray, labels, scrapeTimestampMillis);
+            names.toArray(new String[] {}), valuesArray, labels, scrapeTimestampMillis, metricName);
       }
     }
   }
